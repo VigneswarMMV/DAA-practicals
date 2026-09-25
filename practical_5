@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n, W;
+
+    cout << "Enter number of items: ";
+    cin >> n;
+
+    cout << "Enter knapsack capacity: ";
+    cin >> W;
+
+    int weight[20], value[20];
+    int dp[20][100];
+
+    for (int i = 1; i <= n; i++)
+    {
+        cout << "Enter weight and value of item " << i << ": ";
+        cin >> weight[i] >> value[i];
+    }
+
+    
+    for (int i = 0; i <= n; i++)
+        dp[i][0] = 0;
+
+    for (int j = 0; j <= W; j++)
+        dp[0][j] = 0;
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= W; j++)
+        {
+            if (weight[i] <= j)
+            {
+                dp[i][j] = max(
+                    value[i] + dp[i - 1][j - weight[i]],
+                    dp[i - 1][j]
+                );
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+
+   
+    cout << "\nDP Table:\n";
+
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= W; j++)
+        {
+            cout << dp[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    
+    cout << "\nMaximum Value = " << dp[n][W] << endl;
+
+   
+    cout << "\nSelected Items:\n";
+
+    int j = W;
+
+    for (int i = n; i >= 1; i--)
+    {
+        if (dp[i][j] != dp[i - 1][j])
+        {
+            cout << "Item " << i
+                 << " (Weight = " << weight[i]
+                 << ", Value = " << value[i] << ") TAKEN\n";
+
+            j = j - weight[i];
+        }
+    }
+
+    return 0;
+} 
